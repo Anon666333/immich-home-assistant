@@ -57,14 +57,18 @@ def correct_image_orientation(image: Image.Image) -> Image.Image:
         return image
 
 def combine_portrait_images(images: List[Image.Image], width: int, height: int) -> Image.Image:
-    """Combines two portrait images side-by-side into a single image."""
+    """Combines two portrait images side-by-side into a single image, vertically centered."""
     assert len(images) >= 2, "This function expects at least two images"
     
+    # Resize images to fit within half the width and full height
     resized_images = [ImageOps.contain(img, (width // 2, height), Image.Resampling.LANCZOS) for img in images[:2]]
 
     combined_image = Image.new('RGB', (width, height))
-    combined_image.paste(resized_images[0], (0, 0))
-    combined_image.paste(resized_images[1], (width // 2, 0))
+
+    for i, img in enumerate(resized_images):
+        # Calculate vertical offset to center the image
+        y_offset = (height - img.height) // 2
+        combined_image.paste(img, (i * (width // 2), y_offset))
 
     return combined_image
 

@@ -160,8 +160,8 @@ class BaseImmichImage(ImageEntity):
         _LOGGER.debug(f"Processing {len(asset_bytes_list)} images")
         processed_image, is_combined = process_images_for_slideshow(
             asset_bytes_list, 
-            1024, 
-            768, 
+            2048, 
+            1536, 
             self.config_entry.options.get(CONF_CROP_MODE, DEFAULT_CROP_MODE),
             self.config_entry.options.get(CONF_IMAGE_SELECTION_MODE, DEFAULT_IMAGE_SELECTION_MODE)
         )
@@ -175,7 +175,7 @@ class BaseImmichImage(ImageEntity):
             processed_image = processed_image.convert('RGB')        
 
         with BytesIO() as output:
-            processed_image.save(output, format="JPEG")
+            processed_image.save(output, format="JPEG", quality=95, optimize=True)
             self._current_image_bytes = output.getvalue()
 
         _LOGGER.debug(f"Image updated, size: {len(self._current_image_bytes)} bytes, Combined: {is_combined}")
